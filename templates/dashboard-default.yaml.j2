@@ -1,0 +1,11 @@
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
+  name: default
+  namespace: "{{ k8s_namespace }}"
+spec:
+  chain:
+    middlewares:
+      - name: default-default@kubernetescrd
+      - name: dashboard-basicauth

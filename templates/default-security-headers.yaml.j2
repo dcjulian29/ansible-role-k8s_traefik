@@ -1,0 +1,17 @@
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
+  name: security-headers
+  namespace: default
+spec:
+  headers:
+    browserXssFilter: {{ traefik_headers_browser_xss_filter | to_json }}
+    contentTypeNosniff: {{ traefik_headers_content_type_nosniff | to_json }}
+    forceSTSHeader: {{ traefik_headers_sts_force | to_json }}
+    frameDeny: {{ traefik_headers_frame_deny | to_json }}
+    referrerPolicy: {{ traefik_headers_referrer_policy }}
+    sslRedirect: {{ traefik_headers_ssl_redirect | to_json }}
+    stsIncludeSubdomains: {{ traefik_headers_sts_subdomains | to_json }}
+    stsPreload: {{ traefik_headers_sts_preload | to_json }}
+    stsSeconds: {{ traefik_headers_sts_seconds }}

@@ -1,0 +1,65 @@
+---
+- name: Add helm repository
+  kubernetes.core.helm_repository:
+    context: "{{ k8s_context | default(omit) }}"
+    kubeconfig: "{{ k8s_config | default(omit) }}"
+    name: "{{ chart_repository_name }}"
+    password: "{{ helm_repo_pass | default(omit) }}"
+    state: present
+    url: "{{ helm_repo_url }}"
+    username: "{{ helm_repo_user | default(omit) }}"
+
+- name: Create Kubernetes namespace
+  kubernetes.core.k8s:
+    api_version: v1
+    context: "{{ k8s_context | default(omit) }}"
+    kind: namespace
+    kubeconfig: "{{ k8s_config | default(omit) }}"
+    name: "{{ k8s_namespace }}"
+    state: present
+
+- name: Deploy Traefik to cluster using chart
+  kubernetes.core.helm:
+    chart_ref: "{{ chart_ref }}"
+    chart_version: "{{ chart_version }}"
+    context: "{{ k8s_context | default(omit) }}"
+    kubeconfig: "{{ k8s_config | default(omit) }}"
+    name: "{{ traefik_name }}"
+    namespace: "{{ k8s_namespace }}"
+    update_repo_cache: true
+    values: "{{ lookup('template', 'values.yaml.j2') | from_yaml }}"
+    wait: true
+
+- name: Configure Traefik TLS settings
+  kubernetes.core.k8s:
+    state: present
+    context: "{{ k8s_context | default(omit) }}"
+    definition: "{{ lookup('template', item) | from_yaml }}"
+    kubeconfig: "{{ k8s_config | default(omit) }}"
+  loop:
+    - tls-default.yaml.j2
+    - tls-strict.yaml.j2
+
+- name: Configure Traefik middleware
+  kubernetes.core.k8s:
+    state: present
+    context: "{{ k8s_context | default(omit) }}"
+    definition: "{{ lookup('template', item) | from_yaml }}"
+    kubeconfig: "{{ k8s_config | default(omit) }}"
+  loop:
+    - default-security-headers.yaml.j2
+    - default-compress.yaml.j2
+    - default.yaml.j2
+
+- name: Configure Traefik dashboard
+  kubernetes.core.k8s:
+    state: present
+    context: "{{ k8s_context | default(omit) }}"
+    definition: "{{ lookup('template', item) | from_yaml }}"
+    kubeconfig: "{{ k8s_config | default(omit) }}"
+  loop:
+    - dashboard-secret.yaml.j2
+    - dashboard-auth.yaml.j2
+    - dashboard-default.yaml.j2
+    - dashboard-ingress.yaml.j2
+  when: traefik_dashboard

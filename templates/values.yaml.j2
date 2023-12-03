@@ -1,0 +1,53 @@
+---
+deployment:
+  replicas: {{ traefik_replicas }}
+  annotations: {{ traefik_deploy_annotations }}
+  labels: {{ traefik_deploy_labels }}
+  podAnnotations: {{ traefik_pod_annotations }}
+  podLabels: {{ traefik_pod_labels }}
+  additionalContainers: {{ traefik_additional_containers }}
+ingressRoute:
+  dashboard:
+    enabled: false
+  healthcheck:
+    enabled: false
+providers:
+  kubernetesCRD:
+    enabled: true
+    allowExternalNameServices: true
+    ingressClass: traefik-external
+  kubernetesIngress:
+    enabled: true
+    allowExternalNameServices: true
+    publishedService:
+      enabled: false
+logs:
+  general:
+    format: "{{ traefik_log_level }}"
+    level: "{{ traefik_log_format }}"
+  access:
+    enabled: {{ traefik_log_access | to_json }}
+    format: "{{ traefik_log_format }}"
+globalArguments:
+  - "--global.checknewversion={{ traefik_check_new_version | to_json }}"
+  - "--global.sendanonymoususage={{ traefik_send_usage | to_json }}"
+additionalArguments:
+  - "--serversTransport.insecureSkipVerify={{ traefik_https_skipVerify | to_json }}"
+ports:
+  web:
+    expose: true
+    exposedPort: 80
+    redirectTo:
+      port: websecure
+  websecure:
+    expose: true
+    exposedPort: 443
+    tls:
+      enabled: true
+service:
+  enabled: true
+  type: LoadBalancer
+  annotations: {{ traefik_service_annotations }}
+  labels: {{ traefik_service_labels }}
+  spec:
+    loadBalancerIP: "{{ traefik_ingress_ip }}"
