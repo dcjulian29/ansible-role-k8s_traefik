@@ -1,7 +1,7 @@
 ---
 chart_ref: traefik/traefik
 chart_repository_name: traefik
-chart_version: "25.0.0"
+chart_version: "30.0.0"
 helm_repo_pass: "{{ undef() }}"
 helm_repo_url: https://traefik.github.io/charts
 helm_repo_user: "{{ undef() }}"
