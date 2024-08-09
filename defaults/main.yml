@@ -1,7 +1,7 @@
 ---
 chart_ref: traefik/traefik
 chart_repository_name: traefik
-chart_version: "30.0.0"
+chart_version: "30.0.2"
 helm_repo_pass: "{{ undef() }}"
 helm_repo_url: https://traefik.github.io/charts
 helm_repo_user: "{{ undef() }}"
@@ -12,6 +12,7 @@ k8s_namespace: traefik
 traefik_additional_containers: []
 traefik_check_new_version: false
 traefik_dashboard: true
+traefik_dashboard_expose: false
 traefik_dashboard_fqdn: ""
 traefik_dashboard_pass: admin
 traefik_dashboard_user: admin
@@ -32,11 +33,17 @@ traefik_headers_sts_subdomains: false
 traefik_headers_sts_preload: true
 # Set the max-age of the Strict-Transport-Security header (63072000 = 2 years)
 traefik_headers_sts_seconds: 63072000
+traefik_healthcheck_expose: false
+traefik_http_port: 80
+traefik_https_port: 443
 traefik_https_skipVerify: false
 traefik_ingress_ip: 10.10.10.11
 traefik_log_access: false
+# -- Logging levels are DEBUG, PANIC, FATAL, ERROR, WARN, and INFO
 traefik_log_level: INFO
+# -- https://doc.traefik.io/traefik/observability/access-logs/#format
 traefik_log_format: common    # or json
+traefik_minimum_ready: 0
 traefik_name: "{{ k8s_namespace }}"
 # -- Additional pod annotations (e.g. for mesh injection or prometheus scraping)
 traefik_pod_annotations: { }
@@ -47,3 +54,5 @@ traefik_salt: ThisSaltMustBe22Chars.
 traefik_send_usage: false
 traefik_service_annotations: { }
 traefik_service_labels: { }
+traefik_termination_grace: 60
+traefik_version: "3.0.1"

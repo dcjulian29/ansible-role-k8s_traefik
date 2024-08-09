@@ -1,6 +1,15 @@
 ---
+image:
+  registry: docker.io
+  repository: traefik
+  tag: {{ traefik_version }}
+  pullPolicy: IfNotPresent
 deployment:
+  enabled: true
+  kind: Deployment
   replicas: {{ traefik_replicas }}
+  terminationGracePeriodSeconds: {{ traefik_termination_grace }}
+  minReadySeconds: {{ traefik_minimum_ready }}
   annotations: {{ traefik_deploy_annotations }}
   labels: {{ traefik_deploy_labels }}
   podAnnotations: {{ traefik_pod_annotations }}
@@ -8,9 +17,9 @@ deployment:
   additionalContainers: {{ traefik_additional_containers }}
 ingressRoute:
   dashboard:
-    enabled: false
+    enabled: {{ traefik_dashboard_expose }}
   healthcheck:
-    enabled: false
+    enabled: {{ traefik_healthcheck_expose }}
 providers:
   kubernetesCRD:
     enabled: true
@@ -23,8 +32,8 @@ providers:
       enabled: false
 logs:
   general:
-    format: "{{ traefik_log_level }}"
-    level: "{{ traefik_log_format }}"
+    format: "{{ traefik_log_format }}"
+    level: "{{ traefik_log_level }}"
   access:
     enabled: {{ traefik_log_access | to_json }}
     format: "{{ traefik_log_format }}"
@@ -35,13 +44,17 @@ additionalArguments:
   - "--serversTransport.insecureSkipVerify={{ traefik_https_skipVerify | to_json }}"
 ports:
   web:
-    expose: true
-    exposedPort: 80
+    expose:
+      default: true
+      internal: true
+    exposedPort: {{ traefik_http_port }}
     redirectTo:
       port: websecure
   websecure:
-    expose: true
-    exposedPort: 443
+    expose:
+      default: true
+      internal: true
+    exposedPort: {{ traefik_https_port }}
     tls:
       enabled: true
 service:
