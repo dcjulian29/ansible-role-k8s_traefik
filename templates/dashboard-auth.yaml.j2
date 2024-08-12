@@ -3,7 +3,7 @@ apiVersion: traefik.io/v1alpha1
 kind: Middleware
 metadata:
   name: dashboard-basicauth
-  namespace: "{{ k8s_namespace }}"
+  namespace: "{{ traefik_namespace }}"
 spec:
   basicAuth:
-    secret: "{{ k8s_namespace }}-dashboard-auth"
+    secret: "{{ traefik_namespace }}-dashboard-auth"

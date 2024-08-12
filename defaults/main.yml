@@ -7,7 +7,7 @@ helm_repo_url: https://traefik.github.io/charts
 helm_repo_user: "{{ undef() }}"
 k8s_config: "{{ lookup('ansible.builtin.env', 'K8S_AUTH_KUBECONFIG', default=undef()) }}"
 k8s_context: "{{ lookup('ansible.builtin.env', 'K8S_AUTH_CONTEXT', default=undef()) }}"
-k8s_namespace: traefik
+traefik_namespace: traefik
 # -- Additional containers (e.g. for metric offloading sidecars)
 traefik_additional_containers: []
 traefik_check_new_version: false
@@ -44,7 +44,7 @@ traefik_log_level: INFO
 # -- https://doc.traefik.io/traefik/observability/access-logs/#format
 traefik_log_format: common    # or json
 traefik_minimum_ready: 0
-traefik_name: "{{ k8s_namespace }}"
+traefik_name: "{{ traefik_namespace }}"
 # -- Additional pod annotations (e.g. for mesh injection or prometheus scraping)
 traefik_pod_annotations: { }
 # -- Additional Pod labels (e.g. for filtering Pod by custom labels)
