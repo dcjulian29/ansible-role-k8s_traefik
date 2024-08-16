@@ -37,8 +37,8 @@
     definition: "{{ lookup('template', item) | from_yaml }}"
     kubeconfig: "{{ k8s_config | default(omit) }}"
   loop:
-    - tls-default.yaml.j2
-    - tls-strict.yaml.j2
+    - tls_default.yaml.j2
+    - tls_strict.yaml.j2
 
 - name: Configure Traefik middleware
   kubernetes.core.k8s:
@@ -47,9 +47,9 @@
     definition: "{{ lookup('template', item) | from_yaml }}"
     kubeconfig: "{{ k8s_config | default(omit) }}"
   loop:
-    - default-security-headers.yaml.j2
-    - default-compress.yaml.j2
-    - default.yaml.j2
+    - default_securityheaders.yaml.j2
+    - default_compress.yaml.j2
+    - default_middleware.yaml.j2
 
 - name: Configure Traefik dashboard
   kubernetes.core.k8s:
@@ -58,8 +58,8 @@
     definition: "{{ lookup('template', item) | from_yaml }}"
     kubeconfig: "{{ k8s_config | default(omit) }}"
   loop:
-    - dashboard-secret.yaml.j2
-    - dashboard-auth.yaml.j2
-    - dashboard-default.yaml.j2
-    - dashboard-ingress.yaml.j2
+    - dashboard_secret.yaml.j2
+    - dashboard_auth.yaml.j2
+    - dashboard_default.yaml.j2
+    - dashboard_ingress.yaml.j2
   when: traefik_dashboard
