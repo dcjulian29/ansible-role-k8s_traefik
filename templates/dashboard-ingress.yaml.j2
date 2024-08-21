@@ -3,7 +3,7 @@ apiVersion: traefik.io/v1alpha1
 kind: IngressRoute
 metadata:
   name: dashboard
-  namespace: traefikdashboard
+  namespace: {{ traefik_dashboard_namespace }}
   annotations:
     kubernetes.io/ingress.class: traefik-external
 spec:
@@ -11,9 +11,13 @@ spec:
     - websecure
   routes:
     - kind: Rule
-      match: "{{ 'Host(`{{ traefik_dashboard_fqdn }}`)' if traefik_dashboard_fqdn | length > 0 else 'PathPrefix(`/api`) || PathPrefix(`/dashboard`)' }}"
+{% if traefik_dashboard_fqdn | length > 0 %}
+      match: 'Host(`{{ traefik_dashboard_fqdn }}`)'
+{% else %}
+      match: 'PathPrefix(`/api`) || PathPrefix(`/dashboard`)'
+{% endif %}
       middlewares:
-        - name: dashboarddefault@kubernetescrd
+        - name: {{ traefik_dashboard_namespace }}-default@kubernetescrd
       services:
         - name: api@internal
           kind: TraefikService

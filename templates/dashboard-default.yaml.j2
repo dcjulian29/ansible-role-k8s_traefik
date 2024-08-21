@@ -3,9 +3,9 @@ apiVersion: traefik.io/v1alpha1
 kind: Middleware
 metadata:
   name: default
-  namespace: traefikdashboard
+  namespace: {{ traefik_dashboard_namespace }}
 spec:
   chain:
     middlewares:
       - name: default-defaultmiddleware@kubernetescrd
-      - name: basicauth@kubernetescrd
+      - name: {{ traefik_dashboard_namespace }}-auth@kubernetescrd

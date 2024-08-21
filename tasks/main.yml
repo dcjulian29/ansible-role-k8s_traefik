@@ -18,6 +18,15 @@
     name: "{{ traefik_namespace }}"
     state: present
 
+- name: Create dashboard Kubernetes namespace
+  kubernetes.core.k8s:
+    api_version: v1
+    context: "{{ k8s_context | default(omit) }}"
+    kind: namespace
+    kubeconfig: "{{ k8s_config | default(omit) }}"
+    name: "{{ traefik_dashboard_namespace }}"
+    state: present
+
 - name: Deploy Traefik to cluster using chart
   kubernetes.core.helm:
     chart_ref: "{{ chart_ref }}"
@@ -37,8 +46,8 @@
     definition: "{{ lookup('template', item) | from_yaml }}"
     kubeconfig: "{{ k8s_config | default(omit) }}"
   loop:
-    - tls_default.yaml.j2
-    - tls_strict.yaml.j2
+    - tls-default.yaml.j2
+    - tls-strict.yaml.j2
 
 - name: Configure Traefik middleware
   kubernetes.core.k8s:
@@ -47,9 +56,9 @@
     definition: "{{ lookup('template', item) | from_yaml }}"
     kubeconfig: "{{ k8s_config | default(omit) }}"
   loop:
-    - default_securityheaders.yaml.j2
-    - default_compress.yaml.j2
-    - default_middleware.yaml.j2
+    - default-securityheaders.yaml.j2
+    - default-compress.yaml.j2
+    - default-middleware.yaml.j2
 
 - name: Configure Traefik dashboard
   kubernetes.core.k8s:
@@ -58,8 +67,17 @@
     definition: "{{ lookup('template', item) | from_yaml }}"
     kubeconfig: "{{ k8s_config | default(omit) }}"
   loop:
-    - dashboard_secret.yaml.j2
-    - dashboard_auth.yaml.j2
-    - dashboard_default.yaml.j2
-    - dashboard_ingress.yaml.j2
+    - dashboard-secret.yaml.j2
+    - dashboard-auth.yaml.j2
+    - dashboard-default.yaml.j2
   when: traefik_dashboard
+
+- name: Expose Traefik dashboard
+  kubernetes.core.k8s:
+    state: present
+    context: "{{ k8s_context | default(omit) }}"
+    definition: "{{ lookup('template', item) | from_yaml }}"
+    kubeconfig: "{{ k8s_config | default(omit) }}"
+  loop:
+    - dashboard-ingress.yaml.j2
+  when: traefik_dashboard_expose
