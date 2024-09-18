@@ -2,17 +2,20 @@
 apiVersion: traefik.io/v1alpha1
 kind: IngressRoute
 metadata:
-  name: dashboard
+  name: dashboard-ui
   namespace: {{ traefik_dashboard_namespace }}
   annotations:
-    kubernetes.io/ingress.class: traefik-external
+    kubernetes.io/ingress.class: traefik
+{% if traefik_certmanager_issuer | length > 0 %}
+    cert-manager.io/issuer: {{ traefik_certmanager_issuer }}
+{% endif %}
 spec:
   entryPoints:
     - websecure
   routes:
     - kind: Rule
 {% if traefik_dashboard_fqdn | length > 0 %}
-      match: 'Host(`{{ traefik_dashboard_fqdn }}`)'
+      match: 'Host(`{{ traefik_dashboard_fqdn }}`) && (PathPrefix(`/dashboard`) || PathPrefix(`/api`))'
 {% else %}
       match: 'PathPrefix(`/api`) || PathPrefix(`/dashboard`)'
 {% endif %}
@@ -21,3 +24,7 @@ spec:
       services:
         - name: api@internal
           kind: TraefikService
+{% if traefik_certmanager_enable %}
+  tls:
+    secretName: {{ traefik_certmanager_secret }}
+{% endif %}

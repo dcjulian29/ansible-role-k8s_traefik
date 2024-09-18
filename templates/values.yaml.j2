@@ -25,7 +25,7 @@ providers:
     enabled: true
     allowCrossNamespace: true
     allowExternalNameServices: true
-    ingressClass: traefik-external
+    ingressClass: {{ traefik_ingress_class }}
   kubernetesIngress:
     enabled: true
     allowExternalNameServices: true
@@ -49,8 +49,6 @@ ports:
       default: true
       internal: true
     exposedPort: {{ traefik_http_port }}
-    redirectTo:
-      port: websecure
   websecure:
     expose:
       default: true

@@ -3,11 +3,11 @@
   kubernetes.core.helm_repository:
     context: "{{ k8s_context | default(omit) }}"
     kubeconfig: "{{ k8s_config | default(omit) }}"
-    name: "{{ chart_repository_name }}"
-    password: "{{ helm_repo_pass | default(omit) }}"
+    name: "{{ traefik_chart_repository_name }}"
+    password: "{{ traefik_helm_repo_pass | default(omit) }}"
     state: present
-    url: "{{ helm_repo_url }}"
-    username: "{{ helm_repo_user | default(omit) }}"
+    url: "{{ traefik_helm_repo_url }}"
+    username: "{{ traefik_helm_repo_user | default(omit) }}"
 
 - name: Create Kubernetes namespace
   kubernetes.core.k8s:
@@ -29,8 +29,8 @@
 
 - name: Deploy Traefik to cluster using chart
   kubernetes.core.helm:
-    chart_ref: "{{ chart_ref }}"
-    chart_version: "{{ chart_version }}"
+    chart_ref: "{{ traefik_chart_ref }}"
+    chart_version: "{{ traefik_chart_version }}"
     context: "{{ k8s_context | default(omit) }}"
     kubeconfig: "{{ k8s_config | default(omit) }}"
     name: "{{ traefik_name }}"
@@ -70,6 +70,7 @@
     - dashboard-secret.yaml.j2
     - dashboard-auth.yaml.j2
     - dashboard-default.yaml.j2
+    - dashboard-redirect.yaml.j2
   when: traefik_dashboard
 
 - name: Expose Traefik dashboard
