@@ -15,9 +15,9 @@ spec:
   routes:
     - kind: Rule
 {% if traefik_dashboard_fqdn | length > 0 %}
-      match: 'Host(`{{ traefik_dashboard_fqdn }}`) && (PathPrefix(`/dashboard`) || PathPrefix(`/api`))'
+      match: 'Host(`{{ traefik_dashboard_fqdn }}`) && (PathPrefix(`/`) || PathPrefix(`/api`))'
 {% else %}
-      match: 'PathPrefix(`/api`) || PathPrefix(`/dashboard`)'
+      match: 'PathPrefix(`/api`) || PathPrefix(`/`)'
 {% endif %}
       middlewares:
         - name: {{ traefik_dashboard_namespace }}-default@kubernetescrd
