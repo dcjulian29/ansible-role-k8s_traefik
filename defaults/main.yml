@@ -34,7 +34,6 @@ traefik_headers_sts_subdomains: false
 traefik_headers_sts_preload: true
 # Set the max-age of the Strict-Transport-Security header (63072000 = 2 years)
 traefik_headers_sts_seconds: 63072000
-traefik_healthcheck_expose: false
 traefik_helm_repo_pass: "{{ undef() }}"
 traefik_helm_repo_url: https://traefik.github.io/charts
 traefik_helm_repo_user: "{{ undef() }}"
