@@ -1,12 +1,7 @@
 ---
 image:
-  registry: docker.io
-  repository: traefik
   tag: {{ traefik_version }}
-  pullPolicy: IfNotPresent
 deployment:
-  enabled: true
-  kind: Deployment
   replicas: {{ traefik_replicas }}
   terminationGracePeriodSeconds: {{ traefik_termination_grace }}
   minReadySeconds: {{ traefik_minimum_ready }}
@@ -15,11 +10,8 @@ deployment:
   podAnnotations: {{ traefik_pod_annotations }}
   podLabels: {{ traefik_pod_labels }}
   additionalContainers: {{ traefik_additional_containers }}
-ingressRoute:
-  dashboard:
-    enabled: {{ traefik_dashboard_expose }}
-  healthcheck:
-    enabled: {{ traefik_healthcheck_expose }}
+ingressClass:
+  name: "{{ traefik_ingress_class }}"
 providers:
   kubernetesCRD:
     enabled: true
