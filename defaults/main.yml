@@ -60,4 +60,4 @@ traefik_send_usage: false
 traefik_service_annotations: { }
 traefik_service_labels: { }
 traefik_termination_grace: 60
-traefik_version: "3.0.1"
+traefik_version: "3.4.3"
