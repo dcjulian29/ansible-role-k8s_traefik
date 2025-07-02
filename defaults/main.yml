@@ -9,7 +9,7 @@ traefik_certmanager_issuer: ""
 traefik_certmanager_secret: traefik-dashboard-tls
 traefik_chart_ref: traefik/traefik
 traefik_chart_repository_name: traefik
-traefik_chart_version: "31.0.0"
+traefik_chart_version: "36.3.0"
 traefik_check_new_version: false
 traefik_dashboard: true
 traefik_dashboard_expose: false
